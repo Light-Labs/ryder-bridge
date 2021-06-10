@@ -1,6 +1,6 @@
 module.exports = {
     arrowParens: "avoid",
-    semi: true,
+    semi: false,
     tabWidth: 4,
     useTabs: false,
     endOfLine: "lf",
@@ -9,4 +9,4 @@ module.exports = {
     quoteProps: "as-needed",
     bracketSpacing: true,
     printWidth: 100,
-};
+}

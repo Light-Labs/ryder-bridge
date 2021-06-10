@@ -35,6 +35,8 @@ As such, the first push of this repository will be getting that web socket serve
 <!-- DO NOT DELETE -->
 <!-- start:links-reference -->
 
+[the web extension]: https://github.com/Light-Labs/stacks-wallet-web
+[the stacks wallet web]: https://github.com/Light-Labs/stacks-wallet-web
 [stacks wallet web]: https://github.com/Light-Labs/stacks-wallet-web
 [stacks wallet browser extension]: https://github.com/Light-Labs/stacks-wallet-web
 [`ryderserial-proto`]: https://github.com/Light-Labs/ryderserial-proto

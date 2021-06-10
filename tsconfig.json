@@ -2,9 +2,7 @@
     "extends": "@tsconfig/recommended/tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "lib": [
-            "es6"
-        ],
+        "lib": ["es6"],
         "esModuleInterop": true,
         // emit declarations
         "declaration": true,
@@ -13,11 +11,6 @@
         // rules
         "forceConsistentCasingInFileNames": true
     },
-    "include": [
-        "./src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "./dist/**/*"
-    ]
+    "include": ["./src/**/*"],
+    "exclude": ["node_modules", "./dist/**/*"]
 }
