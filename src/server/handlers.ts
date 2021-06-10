@@ -1,10 +1,20 @@
+/// `handlers.ts` this file holds handlers for events that clients can fire off
+
 import RyderSerial from "@lightlabs/ryderserial-proto"
 import { Callback, ClientEvents, Response, RyderSerialConfig, ServerEvents } from "./events"
 import { Socket } from "socket.io"
 
+// TODO--
+// planning to implement a full-blown SocketServer class that can manage RyderSerial as an INSTANCE.
+// then we can go ahead and make any methods within that class "ClientEventHandlers," essentially
+
+// TODO--
+// yuck... need to organize this flow better
+// NOTE: type Handle<T, E> = (payload: T, callback: (res: Success<E> | Error) => void) => void
 type Handle<T, E> = (payload: T, callback: Callback<E>) => void
 
 export interface ClientEventHandlers {
+    // NOTE: type Handle<T, E> = (payload: T, callback: (res: Success<E> | Error) => void) => void
     serial_open: Handle<RyderSerialConfig, string>
 }
 
@@ -14,6 +24,10 @@ export default function (): ClientEventHandlers {
             payload: RyderSerialConfig,
             callback: (res: Response<string>) => void
         ) {
+            // though it breaks my heart to toss in these eslint disable and ts-ignores...
+            // type-aliasing 'this' here is extraordinarily convenient for
+            // type - suggestions from VS Code
+            //
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -21,6 +35,8 @@ export default function (): ClientEventHandlers {
 
             const ryder_serial = new RyderSerial(payload.port, payload.options)
 
+            // TODO--
+            // this can also be part of our base class (see comment below)
             process.on("unhandledRejection", error => {
                 console.error("unhandled rejection!", error)
                 try {
@@ -31,6 +47,10 @@ export default function (): ClientEventHandlers {
                 }
             })
 
+            // TODO--
+            // let's make a more elegant way to handle not only the opening of ryder-serial, but
+            // let's craft up a better way to keep it around and pass it around (i.e., in a class)
+            // so that we don't have a million implementations of this.
             new Promise<string>((resolve, reject) => {
                 ryder_serial.on("failed", (error: Error) => {
                     reject(
