@@ -1,22 +1,7 @@
 import { Options } from "@lightlabs/ryderserial-proto"
 
-interface Context {
-    [key: string]: any
-    key?: string
-    label?: string
-    value?: any
-}
-
-interface ValidationErrorItem {
-    message: string
-    path: Array<string | number>
-    type: string
-    context?: Context
-}
-
 interface Error {
     error: string
-    errorDetails?: ValidationErrorItem[]
 }
 
 interface Success<T> {
