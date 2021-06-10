@@ -18,8 +18,15 @@ There are two main aspects to the `ryder-bridge`, just as there are two entry-po
 We will be focused on implementing a bridge that specifically connects to the Stacks Web Extension: [The Stacks Wallet Web]. I've been told it was once called "connect".
 
 <!-- markdownlint-disable MD033 -->
+<!--
+  justify-content="space-evenly"
+  align-items="center"
+  font-size="1.5em"
+  justify-content="space-evenly"
+  text-align="center"
+-->
 <br>
-<div style="display: flex; flex-flow: row nowrap; justify-content: space-evenly; align-items: center; font-size: 1.5em; background: #606060; color: black; text-align: center;">
+<div flex-flow="row nowrap" background="#606060" display="flex" flex="row nowrap" color="black">
   <div>RYDER DEVICE</div>
   <div style="width: 50px; text-align:center; padding: 5px;">&#10231;</div>
   <div style="text-decoration: underline; font-weight: 700;">RYDER BRIDGE</div>
