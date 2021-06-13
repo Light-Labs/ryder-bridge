@@ -1,5 +1,9 @@
 .DS_Store
 
+# personal preference
+**/*.ignored.*
+/__ignored__/
+
 # Logs
 logs
 *.log
