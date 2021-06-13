@@ -1,10 +1,17 @@
-# ryder-bridge
+# ryder-bridge<!-- omit in toc -->
 
-- [ryder-bridge](#ryder-bridge)
-  - [Overview](#overview)
-  - [Ryder Bridge Spec](#ryder-bridge-spec)
-  - [Contributing](#contributing)
-  - [Want to Get Involved? New here?](#want-to-get-involved-new-here)
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Ryder Bridge](#ryder-bridge)
+- [Overview](#overview)
+- [Ryder Bridge Spec](#ryder-bridge-spec)
+- [Contributing](#contributing)
+- [Want to Get Involved? New here?](#want-to-get-involved-new-here)
+
+---
+
+## Ryder Bridge
 
 The main mission of the `ryder-bridge` is to expose the Ryder Device to the [Stacks Wallet Browser Extension].
 
