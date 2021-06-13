@@ -46,7 +46,7 @@ As such, the first push of this repository will be getting that web socket serve
 
 ## Ryder Bridge Spec
 
-> **NOTE:** This spec itself is a work in progress — additions or refinements are more than welcome. Get in touch on the Ryder Discord, or open a new issue so we can discuss!
+> **NOTE:** This spec itself is a work in progress — additions or refinements are more than welcome. [Join the discussion here](https://github.com/Light-Labs/ryder-bridge/issues/11) or get in touch on the [Ryder Discord]!
 
 - Features / Capabilities
   - **Now:** expose the API through HTTP with WebSocket on chosen port
