@@ -50,7 +50,11 @@ export class BridgeServer {
                 return
             })
             this.ryder_serial.on("open", async () => {
-                const response = await this.ryder_serial?.send(RyderSerial.COMMAND_INFO)
+                if (!this.ryder_serial) {
+                    reject("Ryder serial was destroyed")
+                    return
+                }
+                const response = await this.ryder_serial.send(RyderSerial.COMMAND_INFO)
                 const info = typeof response === "number" ? response.toString() : response
                 if (!info || info.substr(0, 5) !== "ryder") {
                     reject(`Device at ${payload.port} does not appear to be a Ryder device`)
@@ -72,7 +76,6 @@ export class BridgeServer {
             .finally(() => this.ryder_serial?.close())
 
         this.socket?.broadcast.emit("serial:opened")
-
     }
 }
 
