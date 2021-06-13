@@ -115,8 +115,8 @@ If you're interested — there's a couple of ways you can get involved:
 [stacks wallet browser extension]: https://github.com/Light-Labs/stacks-wallet-web
 [`ryderserial-proto`]: https://github.com/Light-Labs/ryderserial-proto
 [The `ryderserial-proto`]: https://github.com/Light-Labs/ryderserial-proto
-[The `ryder-cli-proto`]: https://github.com/Light-Labs/ryderserial-proto
-[The `ryder-bridge`]: https://github.com/Light-Labs/ryderserial-proto
+[The `ryder-cli-proto`]: https://github.com/Light-Labs/ryder-cli-proto
+[The `ryder-bridge`]: https://github.com/Light-Labs/ryder-bridge
 [ryder discord]: https://discord.gg/N9Scfy9k
 
 <!-- end:links-reference -->
