@@ -1,8 +1,7 @@
 # ryder-bridge<!-- omit in toc -->
 
-## Table of Contents
+## Table of Contents<!-- omit in toc -->
 
-- [Table of Contents](#table-of-contents)
 - [Ryder Bridge](#ryder-bridge)
 - [Overview](#overview)
 - [Ryder Bridge Spec](#ryder-bridge-spec)
@@ -98,12 +97,12 @@ We're eager to grow a community of open-source contributors and maintainers who 
 
 If you're interested — there's a couple of ways you can get involved:
 
-1. Get in touch with us in the Ryder Discord. We would love to meet you!
+1. Get in touch with us in the [Ryder Discord]. We would love to meet you!
 2. See an issue in the code or a feature that you think would be worthwhile? Great, open up a new issue and we'll figure out how to approach it together!
 3. Check out the following repositories and see if any of the open issues interest you. If so, go ahead and comment in that issue's discussion to claim it and follow the Contributing Guidelines for that repository.
-   - The `ryderserial-proto` — A library to facilitate communications between an application and Ryder device
-   - The `ryder-bridge` — (This repo!) A WebSocket API to facilitate communications between The Stacks Wallet Web Extension and the Ryder Device!
-   - The `ryder-cli-proto` — A basic command-line interface to manage Ryder prototype devices.
+   - [`ryderserial-proto`] — A library to facilitate communications between an application and Ryder device
+   - [`ryder-bridge`] — (This repo!) A WebSocket API to facilitate communications between The Stacks Wallet Web Extension and the Ryder Device!
+   - [`ryder-cli-proto`] — A basic command-line interface to manage Ryder prototype devices.
 
 <!-- DO NOT DELETE -->
 <!-- start:links-reference -->
@@ -114,9 +113,9 @@ If you're interested — there's a couple of ways you can get involved:
 [stacks wallet web]: https://github.com/Light-Labs/stacks-wallet-web
 [stacks wallet browser extension]: https://github.com/Light-Labs/stacks-wallet-web
 [`ryderserial-proto`]: https://github.com/Light-Labs/ryderserial-proto
-[The `ryderserial-proto`]: https://github.com/Light-Labs/ryderserial-proto
-[The `ryder-cli-proto`]: https://github.com/Light-Labs/ryder-cli-proto
-[The `ryder-bridge`]: https://github.com/Light-Labs/ryder-bridge
+[`ryderserial-proto`]: https://github.com/Light-Labs/ryderserial-proto
+[`ryder-cli-proto`]: https://github.com/Light-Labs/ryder-cli-proto
+[`ryder-bridge`]: https://github.com/Light-Labs/ryder-bridge
 [ryder discord]: https://discord.gg/N9Scfy9k
 
 <!-- end:links-reference -->
