@@ -14,14 +14,14 @@ socket.on("connect", () => {
     let ryder_port: string
 
     if (!config.ryder_port) {
-        const args = process.argv.slice(2);
+        const args = process.argv.slice(2)
         const ryder_port_idx = args.findIndex(arg => arg === "--ryder_port")
         if (ryder_port_idx !== -1 && ryder_port_idx !== args.length) {
-            ryder_port = args[ryder_port_idx + 1];
+            ryder_port = args[ryder_port_idx + 1]
         } else {
-            console.log({ args });
+            console.log({ args })
             console.log("Missing RYDER_PORT environment variable.")
-            process.exit(0);
+            process.exit(0)
         }
     } else {
         ryder_port = config.ryder_port
