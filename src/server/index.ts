@@ -6,51 +6,55 @@ import express = require("express")
 import http = require("http")
 import { Socket, Server, ServerOptions } from "socket.io"
 import { ClientEvents, Response, ServerEvents } from "./events"
-import config from "../config";
-import RyderSerial, {Options} from "@lightlabs/ryderserial-proto"
+import config from "../config"
+import RyderSerial, { Options } from "@lightlabs/ryderserial-proto"
 
 const app = express()
 const server = http.createServer(app)
 
 export class Handler<T, E> {
-    socket: Socket<T, E>;
+    socket: Socket<T, E>
     constructor(socket: Socket<ClientEvents, ServerEvents>) {
-        this.socket = socket;
+        this.socket = socket
     }
 }
 
 export class BridgeServer {
-    io: Server<ClientEvents, ServerEvents>;
-    ryder_serial?: RyderSerial;
-    handler?: Handler<ClientEvents, ServerEvents>;
+    io: Server<ClientEvents, ServerEvents>
+    ryder_serial?: RyderSerial
+    handler?: Handler<ClientEvents, ServerEvents>
 
     constructor(httpServer: http.Server, serverOptions: Partial<ServerOptions> = {}) {
         this.io = new Server<ClientEvents, ServerEvents>(httpServer, serverOptions)
         this.io.on("connection", socket => {
-            this.handler = new Handler(socket);
+            this.handler = new Handler(socket)
             this.handler.socket.on("serial:open", this.serial_open.bind(this))
         })
         process.on("unhandledRejection", error => {
             console.error("unhandled rejection!", error)
             try {
                 this.ryder_serial?.close()
-            }
-            catch (_) {
+            } catch (_) {
                 /* error ignored */
             }
         })
     }
 
-    async serial_open(payload: { port: string, options?: Options }, callback: (res: Response<string>) => void): Promise<void> {
-        this.ryder_serial = new RyderSerial(payload.port, payload.options);
+    async serial_open(
+        payload: { port: string; options?: Options },
+        callback: (res: Response<string>) => void
+    ): Promise<void> {
+        this.ryder_serial = new RyderSerial(payload.port, payload.options)
         new Promise<string>((resolve, reject) => {
             if (!this.ryder_serial) {
-                reject("Ryder Serial does not exist for some reason");
-                return;
+                reject("Ryder Serial does not exist for some reason")
+                return
             }
 
             this.ryder_serial.on("failed", (error: Error) => {
-                reject(`Could not connect to the Ryder on the specified port. Wrong port or it is currently in use: ${error}`)
+                reject(
+                    `Could not connect to the Ryder on the specified port. Wrong port or it is currently in use: ${error}`
+                )
                 return
             })
             this.ryder_serial.on("open", async () => {
@@ -73,10 +77,12 @@ export class BridgeServer {
             })
         })
             .then((res: string) => callback({ data: res }))
-            .catch(error => callback({
-                source: error,
-                error: error,
-            }))
+            .catch(error =>
+                callback({
+                    source: error,
+                    error: error,
+                })
+            )
             .finally(() => this.ryder_serial?.close())
 
         this.handler?.socket.emit("serial:opened")

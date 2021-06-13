@@ -2,11 +2,10 @@
 
 import { Options } from "@lightlabs/ryderserial-proto"
 
-
 // TODO--
 // formalize Error type
 interface BridgeError {
-    source: Error,
+    source: Error
     error: string
 }
 
@@ -43,7 +42,10 @@ export interface ServerEvents {
 // Doesn't need to be consistent length across the board, but make each grouping clear.
 // consistency on size for all of them, as long as each grouping is easily understood (like `"serial:export:{app_key, owner_key, identity}")
 export interface ClientEvents {
-    "serial:open": (context: {port: string, options?: Options}, callback: (res: Response<string>) => void) => void
+    "serial:open": (
+        context: { port: string; options?: Options },
+        callback: (res: Response<string>) => void
+    ) => void
     // serial::export::app_key
     // serial::export::owner_key
     "serial:export:identity": (
