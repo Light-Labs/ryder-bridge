@@ -1,1 +1,4 @@
 dist
+__ignored__
+**/*.ignored.*
+README.md
