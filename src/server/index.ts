@@ -1,93 +1,43 @@
-/// `server/index.ts` is (as you might've guessed) the entry point into the server
-///
-/// run with `npx ts-node src/server/index.ts` to open up the server
+import WebSocket from 'ws';
+import config, { Config } from "../config";
+import { log } from './logger';
+import { IncomingMessage } from 'http';
+import EventEmitter from 'events';
+import { RyderRpcHost } from './ryder';
+import { AsyncRpcProvider, RpcRequest } from './asyncrpcprovider';
 
-import express = require("express")
-import http = require("http")
-import { Socket, Server, ServerOptions } from "socket.io"
-import { ClientEvents, Response, ServerEvents } from "./events"
-import config from "../config"
-import RyderSerial, { Options } from "@lightlabs/ryderserial-proto"
 
-const app = express()
-const server = http.createServer(app)
+export class BridgeServer extends EventEmitter {
+	protected rpc_provider: AsyncRpcProvider;
+	protected wss!: WebSocket.Server;
 
-export class Handler<T, E> {
-    socket: Socket<T, E>
-    constructor(socket: Socket<ClientEvents, ServerEvents>) {
-        this.socket = socket
-    }
+	constructor(rpc_provider: AsyncRpcProvider) {
+		super();
+		this.rpc_provider = rpc_provider;
+	}
+
+	listen(config: Config) {
+		this.wss = new WebSocket.Server({ host: config.host, port: config.port });
+		this.emit('listening');
+		this.wss.on('connection', this.handle_connection.bind(this));
+	}
+
+	protected handle_connection(client: WebSocket, request: IncomingMessage) {
+		if (!['127.0.0.1', '::1'].includes(request.socket.remoteAddress!))
+			return client.close(1);
+		this.emit('connection', client);
+		client.on('message', this.handle_message.bind(this));
+	}
+
+	protected handle_message(client: WebSocket, data: WebSocket.Data) {
+		if (typeof data !== 'string')
+			return;
+		const request = JSON.parse(data) as RpcRequest; //TODO- handle invalid JSON.
+		this.emit('message', request);
+		this.rpc_provider.call(request).then(response => client.send(JSON.stringify(response)));
+	}
 }
 
-export class BridgeServer {
-    io: Server<ClientEvents, ServerEvents>
-    ryder_serial?: RyderSerial
-    handler?: Handler<ClientEvents, ServerEvents>
-
-    constructor(httpServer: http.Server, serverOptions: Partial<ServerOptions> = {}) {
-        this.io = new Server<ClientEvents, ServerEvents>(httpServer, serverOptions)
-        this.io.on("connection", socket => {
-            this.handler = new Handler(socket)
-            this.handler.socket.on("serial:open", this.serial_open.bind(this))
-        })
-        process.on("unhandledRejection", error => {
-            console.error("unhandled rejection!", error)
-            try {
-                this.ryder_serial?.close()
-            } catch (_) {
-                /* error ignored */
-            }
-        })
-    }
-
-    async serial_open(
-        payload: { port: string; options?: Options },
-        callback: (res: Response<string>) => void
-    ): Promise<void> {
-        this.ryder_serial = new RyderSerial(payload.port, payload.options)
-        new Promise<string>((resolve, reject) => {
-            if (!this.ryder_serial) {
-                reject("Ryder Serial does not exist for some reason")
-                return
-            }
-
-            this.ryder_serial.on("failed", (error: Error) => {
-                reject(
-                    `Could not connect to the Ryder on the specified port. Wrong port or it is currently in use: ${error}`
-                )
-                return
-            })
-            this.ryder_serial.on("open", async () => {
-                if (!this.ryder_serial) {
-                    reject("Ryder serial was destroyed")
-                    return
-                }
-                const response = await this.ryder_serial.send(RyderSerial.COMMAND_INFO)
-                const info = typeof response === "number" ? response.toString() : response
-                if (!info || info.substr(0, 5) !== "ryder") {
-                    reject(`Device at ${payload.port} does not appear to be a Ryder device`)
-                } else {
-                    resolve(info)
-                }
-                return
-            })
-            this.ryder_serial.on("wait_user_confirm", () => {
-                resolve("Confirm or cancel on Ryder device.")
-                return
-            })
-        })
-            .then((res: string) => callback({ data: res }))
-            .catch(error =>
-                callback({
-                    source: error,
-                    error: error,
-                })
-            )
-            .finally(() => this.ryder_serial?.close())
-
-        this.handler?.socket.emit("serial:opened")
-    }
-}
-
-new BridgeServer(server)
-server.listen(config.port, () => console.log(`server listening on port ${config.port}`))
+const server = new BridgeServer(new AsyncRpcProvider(RyderRpcHost));
+server.on('listening', () => log(`listening on ${config.host}:${config.port}`));
+server.listen(config);

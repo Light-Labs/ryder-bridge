@@ -1,46 +1,65 @@
-/// `client.ts` is the main entry point into the client code
-///
-/// run with `npx ts-node src/client.ts` to start up our client
-
-import { io, Socket } from "socket.io-client"
-import { ClientEvents, ServerEvents } from "./server/events"
+import WebSocket from "ws";
 import config from "./config"
 
-const socket: Socket<ServerEvents, ClientEvents> = io("http://localhost:3000")
+type Options = { [key: string]: any };
 
-socket.on("connect", () => {
-    console.log(`connect ${socket.id}`)
+export class RyderWebsocketClient {
+	protected ws!: WebSocket;
+	protected options: Options;
+	protected connecting = false;
 
-    let ryder_port: string
+	protected call_id = 0;
+	protected queue: Array<[Function, Function]> = [];
 
-    if (!config.ryder_port) {
-        const args = process.argv.slice(2)
-        const ryder_port_idx = args.findIndex(arg => arg === "--ryder_port")
-        if (ryder_port_idx !== -1 && ryder_port_idx !== args.length) {
-            ryder_port = args[ryder_port_idx + 1]
-        } else {
-            console.log({ args })
-            console.log("Missing RYDER_PORT environment variable.")
-            process.exit(0)
-        }
-    } else {
-        ryder_port = config.ryder_port
-    }
+	constructor(options: Options) {
+		this.options = Object.assign({ url: 'ws://localhost:8080' }, options);
+		this.connect();
+	}
 
-    // this is opening ryder-serial at `ryder_port`
-    socket.emit("serial:open", { port: ryder_port, options: { debug: true } }, res => {
-        console.log(res)
-    })
-})
+	connect() {
+		if (this.connecting)
+			return;
+		this.connecting = true;
+		if (this.ws)
+			this.ws.close();
+		this.call_id = 0;
+		this.ws = new WebSocket(this.options.url);
+		this.ws.on('error', error => (console.error(error), this.close()));
+		this.ws.on('close', () => setTimeout(this.connect.bind(this), 1000));
+		this.ws.on('message', message => {
+			try {
+				const json = JSON.parse(message.toString());
+				const [resolve, reject] = this.queue[json.id];
+				json.error ? reject(json) : resolve(json);
+			}
+			catch (error) {
+				console.error(error);
+			}
+		});
+	}
 
-socket.on("serial:opened", () => {
-    console.log("serial:opened")
-})
+	close() {
+		this.connecting = false;
+		this.ws && this.ws.close();
+	}
 
-socket.on("connect_error", err => {
-    console.log(`connect_error due to ${err.message}`)
-})
+	async call(method: string, params: any[] = []) {
+		return new Promise((resolve, reject) => {
+			const rpc = { jsonrpc: '2.0', id: this.call_id++, method, params };
+			this.ws.send(JSON.stringify(rpc));
+			this.queue[rpc.id] = [resolve, reject]; //TODO- watchdog
+		});
+	}
 
-socket.on("disconnect", reason => {
-    console.log(`disconnect due to ${reason}`)
-})
+	async export_identity(identity: number) {
+		return this.call('exportIdentity', [identity]);
+	}
+
+	async app_signin_with_identity(identity: number, app_domain: string) {
+		return this.call('appSignInWithIdentity', [identity, app_domain]);
+	}
+
+	async request_sign_transaction(identity: number, transaction_hex: string) {
+		return this.call('requestSignTransaction', [identity, transaction_hex]);
+	}
+}
