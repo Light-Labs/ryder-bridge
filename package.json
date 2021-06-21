@@ -1,10 +1,11 @@
 {
     "name": "@lightlabs/ryder-bridge",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "A WebSocket API to allow Web Extensions to interface with Ryder prototype devices",
     "main": "dist/index.js",
     "types": "dist/types/index.d.ts",
     "scripts": {
+        "start": "npx ts-node src/server/index.ts",
         "test": "jest",
         "prepare": "npm run prettier && npm run lint && npm run build",
         "build": "tsc",
@@ -44,11 +45,9 @@
     },
     "dependencies": {
         "@lightlabs/ryderserial-proto": "^0.0.3",
-        "@types/express": "^4.17.12",
         "@types/node": "^15.12.2",
+        "@types/ws": "^7.4.5",
         "dotenv": "^10.0.0",
-        "express": "^4.17.1",
-        "socket.io": "^4.1.2",
-        "socket.io-client": "^4.1.2"
+        "ws": "^7.5.0"
     }
 }

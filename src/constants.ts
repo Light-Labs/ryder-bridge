@@ -6,4 +6,4 @@ enum LogLevel {
     ERROR = 0b1000,
 }
 
-export default LogLevel
+export default LogLevel;
